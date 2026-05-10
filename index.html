@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Barkat Wears</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:sans-serif;
+}
+
+.glass{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar{
+    transform:translateX(-100%);
+    transition:.3s;
+}
+
+.sidebar.active{
+    transform:translateX(0);
+}
+
+.product-card:hover{
+    transform:translateY(-5px);
+}
+
+.spinner{
+    border:4px solid rgba(255,255,255,0.1);
+    border-top:4px solid #d4af37;
+    border-radius:50%;
+    width:45px;
+    height:45px;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+.toast{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#111;
+    border:1px solid #d4af37;
+    padding:14px 20px;
+    border-radius:12px;
+    z-index:9999;
+}
+
+.skeleton{
+    background:linear-gradient(
+        90deg,
+        rgba(255,255,255,0.05),
+        rgba(255,255,255,0.1),
+        rgba(255,255,255,0.05)
+    );
+    background-size:200% 100%;
+    animation:shine 1.5s infinite;
+}
+
+@keyframes shine{
+    to{
+        background-position:-200% 0;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="glass sticky top-0 z-50 px-5 py-4 flex items-center justify-between">
+
+    <div class="flex items-center gap-4">
+
+        <button id="menuBtn" class="text-3xl">
+            ☰
+        </button>
+
+        <h1 class="text-2xl font-bold text-yellow-500">
+            Barkat Wears
+        </h1>
+
+    </div>
+
+    <div class="flex items-center gap-4">
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Search..."
+            class="hidden md:block bg-black/40 px-4 py-2 rounded-xl outline-none"
+        />
+
+        <button id="cartBtn" class="relative text-2xl">
+            🛒
+            <span id="cartCount"
+                class="absolute -top-2 -right-2 bg-yellow-500 text-black text-xs px-2 py-1 rounded-full">
+                0
+            </span>
+        </button>
+
+    </div>
+
+</nav>
+
+<!-- SIDEBAR -->
+<div id="sidebar"
+    class="sidebar fixed top-0 left-0 w-72 h-full bg-black z-50 p-6">
+
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-yellow-500">
+            Categories
+        </h2>
+
+        <button id="closeSidebar" class="text-3xl">
+            ×
+        </button>
+    </div>
+
+    <div class="space-y-3">
+
+        <button class="categoryBtn w-full text-left glass p-4 rounded-xl"
+            data-category="All">
+            All Categories
+        </button>
+
+        <button class="categoryBtn w-full text-left glass p-4 rounded-xl"
+            data-category="Clothes">
+            Clothes
+        </button>
+
+        <button class="categoryBtn w-full text-left glass p-4 rounded-xl"
+            data-category="Caps">
+            Caps
+        </button>
+
+        <button class="categoryBtn w-full text-left glass p-4 rounded-xl"
+            data-category="Trousers">
+            Trousers
+        </button>
+
+        <button class="categoryBtn w-full text-left glass p-4 rounded-xl"
+            data-category="Jackets">
+            Jackets
+        </button>
+
+        <button class="categoryBtn w-full text-left glass p-4 rounded-xl"
+            data-category="Shirts">
+            Shirts
+        </button>
+
+        <button class="categoryBtn w-full text-left glass p-4 rounded-xl"
+            data-category="Shoes">
+            Shoes
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MAIN -->
+<section class="p-5">
+
+    <div class="flex items-center justify-between mb-6">
+
+        <div>
+            <h2 class="text-3xl font-bold">
+                Trending Products
+            </h2>
+
+            <p class="text-gray-400">
+                Premium Fashion Collection
+            </p>
+        </div>
+
+    </div>
+
+    <!-- LOADER -->
+    <div id="loader"
+        class="flex justify-center py-20">
+
+        <div class="spinner"></div>
+
+    </div>
+
+    <!-- PRODUCTS -->
+    <div id="products"
+        class="grid grid-cols-2 md:grid-cols-4 gap-5">
+    </div>
+
+</section>
+
+<!-- PRODUCT MODAL -->
+<div id="productModal"
+    class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4">
+
+    <div class="glass rounded-3xl max-w-5xl w-full overflow-hidden">
+
+        <div class="grid md:grid-cols-2">
+
+            <img id="modalImage"
+                class="w-full h-full object-cover"/>
+
+            <div class="p-6">
+
+                <h2 id="modalName"
+                    class="text-3xl font-bold mb-4">
+                </h2>
+
+                <p id="modalPrice"
+                    class="text-yellow-500 text-2xl mb-4">
+                </p>
+
+                <p id="modalDesc"
+                    class="text-gray-300 mb-5">
+                </p>
+
+                <div class="space-y-3 text-sm">
+
+                    <p>
+                        <strong>Sizes:</strong>
+                        <span id="modalSizes"></span>
+                    </p>
+
+                    <p>
+                        <strong>Colors:</strong>
+                        <span id="modalColors"></span>
+                    </p>
+
+                    <p>
+                        <strong>Fabric:</strong>
+                        <span id="modalFabric"></span>
+                    </p>
+
+                    <p>
+                        <strong>Availability:</strong>
+                        <span id="modalStock"></span>
+                    </p>
+
+                </div>
+
+                <div class="flex items-center gap-4 mt-5">
+
+                    <button id="minusQty"
+                        class="glass px-4 py-2 rounded-xl">
+                        -
+                    </button>
+
+                    <span id="qty">1</span>
+
+                    <button id="plusQty"
+                        class="glass px-4 py-2 rounded-xl">
+                        +
+                    </button>
+
+                </div>
+
+                <div class="grid gap-4 mt-8">
+
+                    <button id="addCartBtn"
+                        class="bg-yellow-500 text-black py-4 rounded-2xl font-bold">
+                        Add To Cart
+                    </button>
+
+                    <button
+                        class="bg-white text-black py-4 rounded-2xl font-bold">
+                        Buy Now
+                    </button>
+
+                    <a id="whatsappBtn"
+                        target="_blank"
+                        class="bg-green-500 text-white text-center py-4 rounded-2xl font-bold">
+                        Shop on WhatsApp
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CART -->
+<div id="cartSidebar"
+    class="fixed top-0 right-0 w-96 max-w-full h-full bg-black z-50 translate-x-full transition p-5 overflow-y-auto">
+
+    <div class="flex justify-between items-center mb-6">
+
+        <h2 class="text-2xl font-bold">
+            Your Cart
+        </h2>
+
+        <button id="closeCart"
+            class="text-3xl">
+            ×
+        </button>
+
+    </div>
+
+    <div id="cartItems"></div>
+
+    <div class="mt-8 border-t border-white/10 pt-5">
+
+        <h2 class="text-2xl font-bold">
+            Total:
+            Rs <span id="cartTotal">0</span>
+        </h2>
+
+    </div>
+
+</div>
+
+<!-- FLOATING WHATSAPP -->
+<a
+href="https://wa.me/923286990510"
+target="_blank"
+class="fixed bottom-6 left-6 bg-green-500 w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-2xl">
+💬
+</a>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    onSnapshot
+}
+from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd--zaZOEPE5lJp0XuItBO7x8TIeWFuHw",
+  authDomain: "barkat-wears.firebaseapp.com",
+  projectId: "barkat-wears",
+  storageBucket: "barkat-wears.firebasestorage.app",
+  messagingSenderId: "449327583852",
+  appId: "1:449327583852:web:e003b8b21c37b75203fe49"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const productsContainer = document.getElementById("products");
+const loader = document.getElementById("loader");
+
+let allProducts = [];
+let selectedCategory = "All";
+let currentProduct = null;
+let qty = 1;
+
+function toast(message){
+
+    const div=document.createElement("div");
+
+    div.className="toast";
+
+    div.innerText=message;
+
+    document.body.appendChild(div);
+
+    setTimeout(()=>{
+        div.remove();
+    },3000);
+}
+
+function renderProducts(products){
+
+    productsContainer.innerHTML="";
+
+    if(products.length===0){
+
+        productsContainer.innerHTML=`
+            <div class="col-span-full text-center py-20 text-gray-400">
+                No Products Found
+            </div>
+        `;
+
+        return;
+    }
+
+    products.forEach(product=>{
+
+        productsContainer.innerHTML += `
+            <div
+                class="product-card glass rounded-3xl overflow-hidden transition cursor-pointer"
+                onclick='openModal(${JSON.stringify(product)})'>
+
+                <img src="${product.image}"
+                    class="w-full h-60 object-cover"/>
+
+                <div class="p-4">
+
+                    <div class="flex items-center justify-between">
+
+                        <h3 class="font-bold text-lg">
+                            ${product.name}
+                        </h3>
+
+                        <span class="text-yellow-500 font-bold">
+                            Rs ${product.price}
+                        </span>
+
+                    </div>
+
+                    <p class="text-gray-400 text-sm mt-2 line-clamp-2">
+                        ${product.description}
+                    </p>
+
+                    <div class="flex items-center justify-between mt-4">
+
+                        <span class="text-xs bg-white/10 px-3 py-1 rounded-full">
+                            ${product.category}
+                        </span>
+
+                        <button
+                            class="bg-yellow-500 text-black px-4 py-2 rounded-xl font-semibold">
+                            View
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+    });
+}
+
+onSnapshot(collection(db,"products"), (snapshot)=>{
+
+    loader.style.display="none";
+
+    allProducts=[];
+
+    snapshot.forEach(doc=>{
+
+        allProducts.push({
+            id:doc.id,
+            ...doc.data()
+        });
+
+    });
+
+    filterProducts();
+
+});
+
+function filterProducts(){
+
+    let filtered = allProducts;
+
+    if(selectedCategory!=="All"){
+
+        filtered = filtered.filter(p=>p.category===selectedCategory);
+
+    }
+
+    const search = document.getElementById("searchInput").value.toLowerCase();
+
+    if(search){
+
+        filtered = filtered.filter(p=>
+            p.name.toLowerCase().includes(search)
+        );
+    }
+
+    renderProducts(filtered);
+}
+
+document.querySelectorAll(".categoryBtn").forEach(btn=>{
+
+    btn.addEventListener("click",()=>{
+
+        selectedCategory = btn.dataset.category;
+
+        document.getElementById("sidebar").classList.remove("active");
+
+        filterProducts();
+
+    });
+
+});
+
+document.getElementById("menuBtn").onclick=()=>{
+    document.getElementById("sidebar").classList.add("active");
+};
+
+document.getElementById("closeSidebar").onclick=()=>{
+    document.getElementById("sidebar").classList.remove("active");
+};
+
+document.getElementById("searchInput").addEventListener("input",filterProducts);
+
+window.openModal = (product)=>{
+
+    currentProduct=product;
+
+    document.getElementById("productModal").classList.remove("hidden");
+    document.getElementById("productModal").classList.add("flex");
+
+    document.getElementById("modalImage").src=product.image;
+    document.getElementById("modalName").innerText=product.name;
+    document.getElementById("modalPrice").innerText=`Rs ${product.price}`;
+    document.getElementById("modalDesc").innerText=product.description;
+    document.getElementById("modalSizes").innerText=product.sizes;
+    document.getElementById("modalColors").innerText=product.colors;
+    document.getElementById("modalFabric").innerText=product.fabric;
+    document.getElementById("modalStock").innerText=product.stock;
+
+    document.getElementById("whatsappBtn").href =
+        `https://wa.me/923286990510?text=${encodeURIComponent(
+            "Assalamualaikum, I want to order this product from Barkat Wears."
+        )}`;
+};
+
+document.getElementById("productModal").addEventListener("click",(e)=>{
+
+    if(e.target.id==="productModal"){
+
+        document.getElementById("productModal").classList.add("hidden");
+
+    }
+
+});
+
+document.getElementById("plusQty").onclick=()=>{
+
+    qty++;
+
+    document.getElementById("qty").innerText=qty;
+};
+
+document.getElementById("minusQty").onclick=()=>{
+
+    if(qty>1){
+
+        qty--;
+
+        document.getElementById("qty").innerText=qty;
+
+    }
+
+};
+
+function getCart(){
+
+    return JSON.parse(localStorage.getItem("cart")) || [];
+
+}
+
+function saveCart(cart){
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    updateCartUI();
+
+}
+
+document.getElementById("addCartBtn").onclick=()=>{
+
+    let cart = getCart();
+
+    cart.push({
+        ...currentProduct,
+        qty
+    });
+
+    saveCart(cart);
+
+    toast("Added To Cart");
+
+};
+
+function updateCartUI(){
+
+    const cart = getCart();
+
+    document.getElementById("cartCount").innerText=cart.length;
+
+    const container=document.getElementById("cartItems");
+
+    container.innerHTML="";
+
+    let total=0;
+
+    cart.forEach((item,index)=>{
+
+        total += item.price * item.qty;
+
+        container.innerHTML += `
+            <div class="glass p-4 rounded-2xl mb-4">
+
+                <div class="flex gap-4">
+
+                    <img src="${item.image}"
+                        class="w-20 h-20 rounded-xl object-cover"/>
+
+                    <div class="flex-1">
+
+                        <h3 class="font-bold">
+                            ${item.name}
+                        </h3>
+
+                        <p class="text-yellow-500">
+                            Rs ${item.price}
+                        </p>
+
+                        <p>
+                            Qty: ${item.qty}
+                        </p>
+
+                        <button
+                            onclick="removeCart(${index})"
+                            class="mt-2 text-red-400">
+                            Remove
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+    });
+
+    document.getElementById("cartTotal").innerText=total;
+
+}
+
+window.removeCart = (index)=>{
+
+    let cart = getCart();
+
+    cart.splice(index,1);
+
+    saveCart(cart);
+
+    toast("Removed From Cart");
+
+}
+
+document.getElementById("cartBtn").onclick=()=>{
+
+    document.getElementById("cartSidebar")
+        .classList.remove("translate-x-full");
+
+};
+
+document.getElementById("closeCart").onclick=()=>{
+
+    document.getElementById("cartSidebar")
+        .classList.add("translate-x-full");
+
+};
+
+updateCartUI();
+
+</script>
+
+</body>
+</html>

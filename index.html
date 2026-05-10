@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 <title>Barkat Wears</title>
@@ -18,7 +18,7 @@ body{
 
 .glass{
     background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(15px);
+    backdrop-filter:blur(14px);
     border:1px solid rgba(255,255,255,0.08);
 }
 
@@ -42,6 +42,14 @@ body{
     z-index:9999;
 }
 
+.product-card{
+    transition:.3s;
+}
+
+.product-card:hover{
+    transform:translateY(-6px);
+}
+
 .spinner{
     border:4px solid rgba(255,255,255,0.1);
     border-top:4px solid #d4af37;
@@ -57,8 +65,8 @@ body{
     }
 }
 
-.product-card:hover{
-    transform:translateY(-5px);
+.hide-scroll::-webkit-scrollbar{
+    display:none;
 }
 
 </style>
@@ -66,7 +74,7 @@ body{
 
 <body>
 
-<!-- AUTH SCREEN -->
+<!-- LOGIN SCREEN -->
 <div id="authScreen"
 class="min-h-screen flex items-center justify-center p-5">
 
@@ -128,7 +136,7 @@ class="min-h-screen flex items-center justify-center p-5">
 
     </div>
 
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-3">
 
         <input
             id="searchInput"
@@ -137,7 +145,8 @@ class="min-h-screen flex items-center justify-center p-5">
             class="hidden md:block bg-black/40 px-4 py-2 rounded-xl outline-none"
         />
 
-        <button id="logoutBtn"
+        <button
+            id="logoutBtn"
             class="bg-red-500 px-4 py-2 rounded-xl">
             Logout
         </button>
@@ -148,9 +157,9 @@ class="min-h-screen flex items-center justify-center p-5">
 
 <!-- SIDEBAR -->
 <div id="sidebar"
-class="sidebar fixed top-0 left-0 w-72 h-full bg-black z-50 p-6">
+class="sidebar fixed top-0 left-0 w-72 h-full bg-black z-50 p-6 overflow-y-auto">
 
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex items-center justify-between mb-8">
 
         <h2 class="text-2xl font-bold text-yellow-500">
             Categories
@@ -164,37 +173,37 @@ class="sidebar fixed top-0 left-0 w-72 h-full bg-black z-50 p-6">
 
     <div class="space-y-3">
 
-        <button class="categoryBtn w-full glass p-4 rounded-xl"
+        <button class="categoryBtn glass p-4 rounded-xl w-full"
             data-category="All">
             All Categories
         </button>
 
-        <button class="categoryBtn w-full glass p-4 rounded-xl"
+        <button class="categoryBtn glass p-4 rounded-xl w-full"
             data-category="Clothes">
             Clothes
         </button>
 
-        <button class="categoryBtn w-full glass p-4 rounded-xl"
+        <button class="categoryBtn glass p-4 rounded-xl w-full"
             data-category="Caps">
             Caps
         </button>
 
-        <button class="categoryBtn w-full glass p-4 rounded-xl"
+        <button class="categoryBtn glass p-4 rounded-xl w-full"
             data-category="Trousers">
             Trousers
         </button>
 
-        <button class="categoryBtn w-full glass p-4 rounded-xl"
+        <button class="categoryBtn glass p-4 rounded-xl w-full"
             data-category="Jackets">
             Jackets
         </button>
 
-        <button class="categoryBtn w-full glass p-4 rounded-xl"
+        <button class="categoryBtn glass p-4 rounded-xl w-full"
             data-category="Shirts">
             Shirts
         </button>
 
-        <button class="categoryBtn w-full glass p-4 rounded-xl"
+        <button class="categoryBtn glass p-4 rounded-xl w-full"
             data-category="Shoes">
             Shoes
         </button>
@@ -203,8 +212,8 @@ class="sidebar fixed top-0 left-0 w-72 h-full bg-black z-50 p-6">
 
 </div>
 
-<!-- PRODUCTS -->
-<section class="p-5">
+<!-- HOME -->
+<section id="homePage" class="p-5">
 
     <div class="mb-8">
 
@@ -219,87 +228,159 @@ class="sidebar fixed top-0 left-0 w-72 h-full bg-black z-50 p-6">
     </div>
 
     <div id="loader"
-        class="flex justify-center py-20">
+    class="flex justify-center py-20">
 
         <div class="spinner"></div>
 
     </div>
 
     <div id="products"
-        class="grid grid-cols-2 md:grid-cols-4 gap-5">
+    class="grid grid-cols-2 md:grid-cols-4 gap-5">
     </div>
 
 </section>
 
-<!-- PRODUCT MODAL -->
-<div id="productModal"
-class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4">
+<!-- PRODUCT PAGE -->
+<section id="productPage"
+class="hidden min-h-screen bg-black">
 
-    <div class="glass rounded-3xl max-w-5xl w-full overflow-hidden">
+    <div class="sticky top-0 z-40 bg-black p-4 border-b border-white/10 flex items-center gap-4">
 
-        <div class="grid md:grid-cols-2">
+        <button id="backBtn"
+        class="text-3xl">
+            ←
+        </button>
 
-            <img id="modalImage"
-                class="w-full h-full object-cover"/>
+        <h2 class="text-xl font-bold">
+            Product Details
+        </h2>
 
-            <div class="p-6">
+    </div>
 
-                <h2 id="modalName"
-                    class="text-3xl font-bold mb-4">
+    <!-- IMAGE -->
+    <div class="w-full bg-black">
+
+        <img
+            id="detailImage"
+            class="w-full h-[420px] object-cover"
+        />
+
+    </div>
+
+    <!-- DETAILS -->
+    <div class="p-5 rounded-t-[35px] bg-[#111] -mt-6 relative z-20">
+
+        <div class="flex items-start justify-between gap-4">
+
+            <div>
+
+                <h2 id="detailName"
+                class="text-3xl font-bold mb-2">
                 </h2>
 
-                <p id="modalPrice"
-                    class="text-yellow-500 text-2xl mb-4">
+                <p id="detailCategory"
+                class="text-yellow-500">
                 </p>
 
-                <p id="modalDesc"
-                    class="text-gray-300 mb-5">
+            </div>
+
+            <h3 id="detailPrice"
+            class="text-3xl font-bold text-yellow-500">
+            </h3>
+
+        </div>
+
+        <div class="mt-6">
+
+            <h3 class="text-xl font-bold mb-3">
+                Description
+            </h3>
+
+            <p id="detailDescription"
+            class="text-gray-300 leading-7">
+            </p>
+
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-8">
+
+            <div class="glass p-4 rounded-2xl">
+
+                <p class="text-gray-400 text-sm">
+                    Sizes
                 </p>
 
-                <div class="space-y-3">
+                <h3 id="detailSizes"
+                class="font-bold text-lg mt-2">
+                </h3>
 
-                    <p>
-                        <strong>Sizes:</strong>
-                        <span id="modalSizes"></span>
-                    </p>
+            </div>
 
-                    <p>
-                        <strong>Colors:</strong>
-                        <span id="modalColors"></span>
-                    </p>
+            <div class="glass p-4 rounded-2xl">
 
-                    <p>
-                        <strong>Fabric:</strong>
-                        <span id="modalFabric"></span>
-                    </p>
+                <p class="text-gray-400 text-sm">
+                    Colors
+                </p>
 
-                    <p>
-                        <strong>Availability:</strong>
-                        <span id="modalStock"></span>
-                    </p>
+                <h3 id="detailColors"
+                class="font-bold text-lg mt-2">
+                </h3>
 
-                </div>
+            </div>
 
-                <a
-                    id="whatsappBtn"
-                    target="_blank"
-                    class="block mt-8 bg-green-500 text-center py-4 rounded-2xl font-bold">
-                    Shop on WhatsApp
-                </a>
+            <div class="glass p-4 rounded-2xl">
+
+                <p class="text-gray-400 text-sm">
+                    Fabric
+                </p>
+
+                <h3 id="detailFabric"
+                class="font-bold text-lg mt-2">
+                </h3>
+
+            </div>
+
+            <div class="glass p-4 rounded-2xl">
+
+                <p class="text-gray-400 text-sm">
+                    Availability
+                </p>
+
+                <h3 id="detailStock"
+                class="font-bold text-lg mt-2 text-green-400">
+                </h3>
 
             </div>
 
         </div>
 
+        <!-- BUTTONS -->
+        <div class="grid gap-4 mt-10 mb-20">
+
+            <button
+                class="bg-yellow-500 text-black py-4 rounded-2xl font-bold text-lg">
+                Buy Now
+            </button>
+
+            <a
+                id="whatsappBtn"
+                target="_blank"
+                class="bg-green-500 text-white text-center py-4 rounded-2xl font-bold text-lg">
+                Shop on WhatsApp
+            </a>
+
+        </div>
+
     </div>
 
-</div>
+</section>
 
 </div>
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 
 import {
     getFirestore,
@@ -332,10 +413,6 @@ const db = getFirestore(app);
 
 const auth = getAuth(app);
 
-const authScreen = document.getElementById("authScreen");
-
-const appScreen = document.getElementById("app");
-
 function toast(message){
 
     const div=document.createElement("div");
@@ -352,7 +429,7 @@ function toast(message){
 
 }
 
-document.getElementById("signupBtn").onclick = async()=>{
+document.getElementById("signupBtn").onclick=async()=>{
 
     const email=document.getElementById("email").value;
 
@@ -360,7 +437,11 @@ document.getElementById("signupBtn").onclick = async()=>{
 
     try{
 
-        await createUserWithEmailAndPassword(auth,email,password);
+        await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
 
         toast("Signup Successful");
 
@@ -372,7 +453,7 @@ document.getElementById("signupBtn").onclick = async()=>{
 
 };
 
-document.getElementById("loginBtn").onclick = async()=>{
+document.getElementById("loginBtn").onclick=async()=>{
 
     const email=document.getElementById("email").value;
 
@@ -380,7 +461,11 @@ document.getElementById("loginBtn").onclick = async()=>{
 
     try{
 
-        await signInWithEmailAndPassword(auth,email,password);
+        await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
 
         toast("Login Successful");
 
@@ -392,7 +477,7 @@ document.getElementById("loginBtn").onclick = async()=>{
 
 };
 
-document.getElementById("logoutBtn").onclick = async()=>{
+document.getElementById("logoutBtn").onclick=async()=>{
 
     await signOut(auth);
 
@@ -402,15 +487,19 @@ onAuthStateChanged(auth,(user)=>{
 
     if(user){
 
-        authScreen.classList.add("hidden");
+        document.getElementById("authScreen")
+        .classList.add("hidden");
 
-        appScreen.classList.remove("hidden");
+        document.getElementById("app")
+        .classList.remove("hidden");
 
     }else{
 
-        authScreen.classList.remove("hidden");
+        document.getElementById("authScreen")
+        .classList.remove("hidden");
 
-        appScreen.classList.add("hidden");
+        document.getElementById("app")
+        .classList.add("hidden");
 
     }
 
@@ -422,11 +511,10 @@ let selectedCategory="All";
 
 const productsContainer=document.getElementById("products");
 
-const loader=document.getElementById("loader");
-
 onSnapshot(collection(db,"products"),(snapshot)=>{
 
-    loader.style.display="none";
+    document.getElementById("loader")
+    .style.display="none";
 
     allProducts=[];
 
@@ -452,21 +540,22 @@ function renderProducts(products){
         productsContainer.innerHTML += `
 
             <div
-                onclick='openModal(${JSON.stringify(product)})'
-                class="product-card glass rounded-3xl overflow-hidden transition cursor-pointer">
+            onclick='openProduct(${JSON.stringify(product)})'
+            class="product-card glass rounded-3xl overflow-hidden cursor-pointer">
 
-                <img src="${product.image}"
-                    class="w-full h-60 object-cover"/>
+                <img
+                src="${product.image}"
+                class="w-full h-56 object-cover"/>
 
                 <div class="p-4">
 
-                    <div class="flex justify-between">
+                    <div class="flex justify-between gap-2">
 
-                        <h3 class="font-bold">
+                        <h3 class="font-bold text-lg">
                             ${product.name}
                         </h3>
 
-                        <span class="text-yellow-500">
+                        <span class="text-yellow-500 font-bold">
                             Rs ${product.price}
                         </span>
 
@@ -477,7 +566,7 @@ function renderProducts(products){
                     </p>
 
                     <button
-                        class="mt-4 w-full bg-yellow-500 text-black py-3 rounded-xl font-bold">
+                    class="mt-4 bg-yellow-500 text-black w-full py-3 rounded-xl font-bold">
                         View Product
                     </button>
 
@@ -486,6 +575,7 @@ function renderProducts(products){
             </div>
 
         `;
+
     });
 
 }
@@ -550,54 +640,62 @@ document.getElementById("closeSidebar").onclick=()=>{
 
 };
 
-window.openModal=(product)=>{
+window.openProduct=(product)=>{
 
-    document.getElementById("productModal")
+    document.getElementById("homePage")
+    .classList.add("hidden");
+
+    document.getElementById("productPage")
     .classList.remove("hidden");
 
-    document.getElementById("productModal")
-    .classList.add("flex");
+    document.getElementById("detailImage")
+    .src=product.image;
 
-    document.getElementById("modalImage").src=product.image;
+    document.getElementById("detailName")
+    .innerText=product.name;
 
-    document.getElementById("modalName").innerText=product.name;
+    document.getElementById("detailCategory")
+    .innerText=product.category;
 
-    document.getElementById("modalPrice").innerText=
-    `Rs ${product.price}`;
+    document.getElementById("detailPrice")
+    .innerText=`Rs ${product.price}`;
 
-    document.getElementById("modalDesc").innerText=
-    product.description;
+    document.getElementById("detailDescription")
+    .innerText=product.description;
 
-    document.getElementById("modalSizes").innerText=
-    product.sizes;
+    document.getElementById("detailSizes")
+    .innerText=product.sizes;
 
-    document.getElementById("modalColors").innerText=
-    product.colors;
+    document.getElementById("detailColors")
+    .innerText=product.colors;
 
-    document.getElementById("modalFabric").innerText=
-    product.fabric;
+    document.getElementById("detailFabric")
+    .innerText=product.fabric;
 
-    document.getElementById("modalStock").innerText=
-    product.stock;
+    document.getElementById("detailStock")
+    .innerText=product.stock;
 
     document.getElementById("whatsappBtn").href =
     `https://wa.me/923286990510?text=${encodeURIComponent(
         "Assalamualaikum, I want to order this product from Barkat Wears."
     )}`;
 
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
 };
 
-document.getElementById("productModal")
-.addEventListener("click",(e)=>{
+document.getElementById("backBtn").onclick=()=>{
 
-    if(e.target.id==="productModal"){
+    document.getElementById("productPage")
+    .classList.add("hidden");
 
-        document.getElementById("productModal")
-        .classList.add("hidden");
+    document.getElementById("homePage")
+    .classList.remove("hidden");
 
-    }
-
-});
+};
 
 </script>
 
